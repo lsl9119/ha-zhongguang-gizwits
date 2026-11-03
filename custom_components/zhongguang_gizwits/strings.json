@@ -1,0 +1,79 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Zhongguang (Gizwits)",
+        "description": "Choose how to sign in.",
+        "menu_options": {
+          "password": "Phone + password (recommended, auto-renews token)",
+          "encrypted": "Paste the App's captured login request (encrypted, auto-renews)",
+          "token": "Enter a User Token (legacy, manual renewal)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate",
+        "description": "The Gizwits token expired and could not be renewed automatically. Entities and history are kept.",
+        "menu_options": {
+          "password": "Phone + password (recommended, auto-renews token)",
+          "encrypted": "Paste the App's captured login request (encrypted, auto-renews)",
+          "token": "Enter a User Token (legacy, manual renewal)"
+        }
+      },
+      "reconfigure": {
+        "title": "Change sign-in method",
+        "description": "Change the sign-in method or password. Entities and history are kept.",
+        "menu_options": {
+          "password": "Phone + password (recommended, auto-renews token)",
+          "encrypted": "Paste the App's captured login request (encrypted, auto-renews)",
+          "token": "Enter a User Token (legacy, manual renewal)"
+        }
+      },
+      "password": {
+        "title": "Phone + password",
+        "description": "Same account as the Zhongguang App password login. Credentials are stored locally and used to renew the token (at most every 5 min; stops immediately on a wrong password).\n\nDevice: {did}\nLast error: {error}",
+        "data": {
+          "account": "Phone number",
+          "password": "Password",
+          "app_id": "Gizwits App ID"
+        }
+      },
+      "encrypted": {
+        "title": "Paste encrypted login request",
+        "description": "Paste the JSON body of POST app.outes.com/app/smart_home/login/pwd from a capture.\n\nDevice: {did}\nLast error: {error}",
+        "data": {
+          "login_body": "Login request body (JSON)",
+          "app_id": "Gizwits App ID"
+        }
+      },
+      "token": {
+        "title": "User Token",
+        "description": "Copy the X-Gizwits-User-token header. Cannot auto-renew.\n\nDevice: {did}\nLast error: {error}",
+        "data": {
+          "token": "X-Gizwits-User-token",
+          "did": "Device DID",
+          "product_key": "Product Key (optional)",
+          "app_id": "Gizwits App ID"
+        }
+      },
+      "pick_device": {
+        "title": "Choose device",
+        "data": {
+          "did": "Device"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid token, or this account cannot read the device",
+      "bad_credentials": "Wrong phone number or password",
+      "bad_body": "Could not find data.account / data.password",
+      "no_devices": "No devices bound to this account",
+      "cannot_connect": "Cannot connect",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Device already configured",
+      "reauth_successful": "Signed in again, integration reloaded",
+      "reconfigure_successful": "Sign-in updated, integration reloaded"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "domain": "zhongguang_gizwits",
+  "name": "中广舒适家 (Gizwits)",
+  "codeowners": [
+    "@lsl9119"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/lsl9119/ha-zhongguang-gizwits",
+  "integration_type": "device",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/lsl9119/ha-zhongguang-gizwits/issues",
+  "requirements": [],
+  "version": "0.4.0"
+}
