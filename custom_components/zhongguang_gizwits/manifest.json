@@ -1,6 +1,9 @@
 {
   "domain": "zhongguang_gizwits",
   "name": "中广舒适家 (Gizwits)",
+  "categories": [
+    "climate"
+  ],
   "codeowners": [
     "@lsl9119"
   ],
