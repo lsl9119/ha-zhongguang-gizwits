@@ -1,7 +1,9 @@
 # 中广舒适家 Zhongguang (Gizwits) for Home Assistant
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
+<!-- ha-marketplace:exclude-start -->
+[![HACS / Marketplace Custom](https://img.shields.io/badge/HACS%20%2F%20Marketplace-Custom-41BDF5.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lsl9119&repository=ha-zhongguang-gizwits&category=integration)
 [![Validate](https://github.com/lsl9119/ha-zhongguang-gizwits/actions/workflows/validate.yml/badge.svg)](https://github.com/lsl9119/ha-zhongguang-gizwits/actions/workflows/validate.yml)
+<!-- ha-marketplace:exclude-end -->
 
 把「中广舒适家」App 里的**中广欧特斯家用变频两联供（空气源热泵）外机**接入 Home Assistant：读取水温、制冷剂侧温度压力、压缩机频率等，并可开关机、切换制热/制冷、设定目标水温。
 
@@ -31,14 +33,34 @@ English summary: unofficial Home Assistant integration for Zhongguang/Outes air-
 
 其他走同一个 App 的中广设备也许能连上，但传感器含义可能不同，集成会在日志里提示。欢迎在 issue 里附上「诊断信息」和线控器面板照片，一起把映射补上。
 
-## 安装（HACS 自定义存储库）
+<!-- ha-marketplace:exclude-start -->
+## 安装
+
+本仓库还不在默认目录（catalog）里，需要作为**自定义存储库**添加。点下面的按钮，会在你自己的 Home Assistant 里打开本仓库：HA 2026.11 及以后打开内置的 **Marketplace**，更早的版本打开 HACS。
+
+[![在 Home Assistant 中打开本仓库](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lsl9119&repository=ha-zhongguang-gizwits&category=integration)
+
+### Home Assistant 2026.11 及以后（Marketplace）
+
+HACS 已经内置进 Home Assistant，改名 **Marketplace**（设置 → Marketplace），不用再装 HACS，也装不了。
+
+1. 点上面的按钮，确认添加为自定义存储库（类别 **Integration**）。添加自定义存储库需要在 Marketplace 里连接 GitHub 账号。也可以在 Marketplace 里手动添加 `https://github.com/lsl9119/ha-zhongguang-gizwits`。
+2. 下载「中广舒适家」。首次安装不用重启；以后更新会有修复提示，按提示重启即可。
+3. 设置 → 设备与服务 → 添加集成 → 搜索「中广舒适家」
+
+从 HACS 升级到 2026.11 的用户不用做任何事：已装的本集成、自定义存储库和更新实体会自动迁移到 Marketplace。
+
+### Home Assistant 2026.10 及更早（HACS）
 
 1. HACS → 右上角 ⋮ → **自定义存储库**，填 `https://github.com/lsl9119/ha-zhongguang-gizwits`，类别选 **Integration**
 2. 在 HACS 里搜索「中广舒适家」并下载
 3. 重启 Home Assistant
 4. 设置 → 设备与服务 → 添加集成 → 搜索「中广舒适家」
 
-手动安装：把 `custom_components/zhongguang_gizwits` 复制到 HA 配置目录的 `custom_components/` 下，然后重启。
+### 手动安装
+
+把 `custom_components/zhongguang_gizwits` 复制到 HA 配置目录的 `custom_components/` 下，然后重启。
+<!-- ha-marketplace:exclude-end -->
 
 ## 登录方式
 
