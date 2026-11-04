@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Release title (after the tag), e.g. 目标水温改名"
+        required: true
+      notes:
+        description: "Release notes (Markdown)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Read version from manifest
+        id: version
+        run: |
+          version=$(jq -r .version custom_components/zhongguang_gizwits/manifest.json)
+          echo "tag=v${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          TITLE: ${{ inputs.title }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "::error::Release $TAG already exists; bump version in manifest.json first."
+            exit 1
+          fi
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "$TAG — $TITLE" \
+            --notes "$NOTES" \
+            --latest
