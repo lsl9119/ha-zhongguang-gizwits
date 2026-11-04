@@ -2,7 +2,7 @@
   "domain": "zhongguang_gizwits",
   "name": "中广舒适家 (Gizwits)",
   "categories": [
-    "climate"
+    "climate.heat_pumps_air_conditioning"
   ],
   "codeowners": [
     "@lsl9119"
