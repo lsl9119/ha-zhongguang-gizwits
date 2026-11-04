@@ -42,8 +42,10 @@ HVAC_MODE_TO_BYTE = {"cool": 0x01, "heat": 0x08}
 BYTE_TO_HVAC_MODE = {v: k for k, v in HVAC_MODE_TO_BYTE.items()}
 SETPOINT_OFFSET = {"cool": 4, "heat": 6}
 
-# 写入范围（水温）。保持保守：制热沿用 16–30（已验证 29/30 可写），制冷 7–25。
-SETPOINT_RANGE = {"heat": (16.0, 30.0), "cool": (7.0, 25.0)}
+# 目标出水温度可写范围。外机极端天气下会用到：制热最高 55 °C、制冷最低 7 °C（用户按线控器给出）。
+# 制热下限 16、制冷上限 25 沿用旧值，未对照线控器。设备里按 ×10 存，但只实写验证过整数，所以步进取 1。
+SETPOINT_RANGE = {"heat": (16.0, 55.0), "cool": (7.0, 25.0)}
+SETPOINT_STEP = 1.0
 
 # 原始字段里体积大且全零/无意义的，不放进实体属性（避免 recorder 膨胀）
 RAW_ATTR_SKIP = {"Time_Set", "OTA_FlashMsg", "Update_Ctrl"}

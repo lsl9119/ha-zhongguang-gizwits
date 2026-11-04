@@ -13,7 +13,11 @@ import aiohttp
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
+from homeassistant.exceptions import (
+    ConfigEntryAuthFailed,
+    HomeAssistantError,
+    ServiceValidationError,
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -47,6 +51,7 @@ from .const import (
     RUN_REQUEST_MASK,
     VERIFIED_PRODUCT_KEYS,
     SETPOINT_OFFSET,
+    SETPOINT_RANGE,
     SLV1_KEYS,
 )
 
@@ -411,7 +416,14 @@ class ZGCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         power: bool | None = None,
         mode: str | None = None,
         target_temp: float | None = None,
+        heat_target: float | None = None,
+        cool_target: float | None = None,
     ) -> None:
+        """改 Ctrl_Set 里的指定字段后整体下发。
+
+        heat_target / cool_target 直接写各自的字节，与当前模式无关；
+        target_temp 写「当前（或本次设定的）模式」对应的那个设定值。
+        """
         if not self._ctrl_known:
             raise HomeAssistantError("还没从云端读到设备当前的控制字（Ctrl_Set），为避免覆盖设备设置暂不下发，请稍后再试")
         raw = bytearray.fromhex(self._ctrl_hex)
@@ -422,11 +434,21 @@ class ZGCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             raw[0] = 0x05 if power else 0x04
         if mode is not None:
             raw[3] = HVAC_MODE_TO_BYTE[mode]
+        setpoints: dict[str, float] = {}
         if target_temp is not None:
-            cur_mode = BYTE_TO_HVAC_MODE.get(raw[3], "heat")
-            off = SETPOINT_OFFSET[cur_mode]
-            value = int(round(target_temp * 10))
-            raw[off:off + 2] = value.to_bytes(2, "big")
+            setpoints[BYTE_TO_HVAC_MODE.get(raw[3], "heat")] = target_temp
+        if heat_target is not None:
+            setpoints["heat"] = heat_target
+        if cool_target is not None:
+            setpoints["cool"] = cool_target
+        for sp_mode, temp in setpoints.items():
+            lo, hi = SETPOINT_RANGE[sp_mode]
+            if not lo <= float(temp) <= hi:
+                raise ServiceValidationError(
+                    f"{'制热' if sp_mode == 'heat' else '制冷'}目标出水温度需在 {lo:g}–{hi:g} °C 之间，收到 {temp}"
+                )
+            off = SETPOINT_OFFSET[sp_mode]
+            raw[off:off + 2] = int(round(float(temp) * 10)).to_bytes(2, "big")
 
         payload = {"attrs": {"Ctrl_Set": raw.hex()}}
         try:
@@ -443,4 +465,6 @@ class ZGCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._ctrl_hex = raw.hex()
         self.attrs["Ctrl_Set"] = raw.hex()
         self._store.async_delay_save(self._data_to_save, 5)
-        self.async_set_updated_data(self._parse())
+        data = self._parse()
+        data["updated_at"] = (self.data or {}).get("updated_at")   # 云端上报时间不因本地下发而清空
+        self.async_set_updated_data(data)
