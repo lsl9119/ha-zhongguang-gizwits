@@ -1,7 +1,9 @@
-"""目标出水温度（制热 / 制冷各一个）。
+"""目标水温（制热 / 制冷各一个）。
 
-这台外机的设定值是「出水温度」，不是室温，所以不用 climate（空调式温控盘），
-而是像线控器一样，制热、制冷两个设定值分开、随时可改，与当前模式无关。
+设定值是水温，不是室温，所以不用 climate（空调式温控盘），而是像线控器一样，
+制热、制冷两个设定值分开、随时可改，与当前模式无关。
+按出水还是回水控制，由线控器里的「控制方式」参数决定（只能在线控器上改，App 改不了）；
+作者的机器是回水控制。
 """
 from __future__ import annotations
 
@@ -17,8 +19,8 @@ from .entity import ZGControlEntity
 
 # (key, 名称, 模式, 图标)
 SETPOINTS = [
-    ("heat_target", "制热出水温度", "heat", "mdi:water-thermometer"),
-    ("cool_target", "制冷出水温度", "cool", "mdi:snowflake-thermometer"),
+    ("heat_target", "制热目标水温", "heat", "mdi:water-thermometer"),
+    ("cool_target", "制冷目标水温", "cool", "mdi:snowflake-thermometer"),
 ]
 
 
@@ -50,7 +52,11 @@ class ZGSetpoint(ZGControlEntity, NumberEntity):
 
     @property
     def extra_state_attributes(self) -> dict:
-        attrs = {"active": self.coordinator.data.get("mode") == self._sp_mode}
+        attrs = {
+            "active": self.coordinator.data.get("mode") == self._sp_mode,
+            # 线控器参数决定，云端目前读不出（Var_Set 待解码）
+            "control_point": "出水或回水，取决于线控器「控制方式」参数",
+        }
         if self._sp_mode == "cool":
             # Ctrl_Set 字节 4–5 是制冷设定值，这一点是推断的（还没实写验证过）
             attrs["note"] = "制冷设定值的字节位置是推断的，入夏切制冷时再确认"

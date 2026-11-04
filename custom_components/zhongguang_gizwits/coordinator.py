@@ -445,7 +445,7 @@ class ZGCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             lo, hi = SETPOINT_RANGE[sp_mode]
             if not lo <= float(temp) <= hi:
                 raise ServiceValidationError(
-                    f"{'制热' if sp_mode == 'heat' else '制冷'}目标出水温度需在 {lo:g}–{hi:g} °C 之间，收到 {temp}"
+                    f"{'制热' if sp_mode == 'heat' else '制冷'}目标水温需在 {lo:g}–{hi:g} °C 之间，收到 {temp}"
                 )
             off = SETPOINT_OFFSET[sp_mode]
             raw[off:off + 2] = int(round(float(temp) * 10)).to_bytes(2, "big")

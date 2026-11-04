@@ -3,7 +3,7 @@
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories)
 [![Validate](https://github.com/lsl9119/ha-zhongguang-gizwits/actions/workflows/validate.yml/badge.svg)](https://github.com/lsl9119/ha-zhongguang-gizwits/actions/workflows/validate.yml)
 
-把「中广舒适家」App 里的**中广欧特斯家用变频两联供（空气源热泵）外机**接入 Home Assistant：读取水温、制冷剂侧温度压力、压缩机频率等，并可开关机、切换制热/制冷、设定目标出水温度。
+把「中广舒适家」App 里的**中广欧特斯家用变频两联供（空气源热泵）外机**接入 Home Assistant：读取水温、制冷剂侧温度压力、压缩机频率等，并可开关机、切换制热/制冷、设定目标水温。
 
 > 非官方项目，与中广欧特斯、机智云（Gizwits）没有任何关系。接口来自对 App 网络请求的观察，厂商随时可能改动。控制的是真实的采暖/制冷设备，请自行评估风险。
 
@@ -14,7 +14,7 @@ English summary: unofficial Home Assistant integration for Zhongguang/Outes air-
 - 控制（v0.5.0 起不再用空调式的 `climate` 温控盘，改成和线控器一样分开设定）：
   - `switch` 外机开关
   - `select` 运行模式：制热 / 制冷（只切模式，不顺带开机）
-  - `number` 制热出水温度 16–55 °C、制冷出水温度 7–25 °C，步进 1 °C；两个设定值各自独立，任何模式下都能改，越界直接拒绝
+  - `number` 制热目标水温 16–55 °C、制冷目标水温 7–25 °C，步进 1 °C；两个设定值各自独立，任何模式下都能改，越界直接拒绝
   - 原始控制字 `ctrl_raw` 和云端字段 `raw_attrs` 挂在「外机开关」的属性上
 - 传感器：出水/回水温度、室外环境温度、翅片/板换/吸气/排气温度、排气饱和温度与压力、排气过热度、压缩机频率、直流风机、AC 输入电压、母线电压、IPM 温度、电子膨胀阀步数、线控器室内温度
 - 二值传感器：压缩机运行（按频率）、压缩机运行位（状态位，变化即报，启停沿更准）、云端在线
@@ -58,7 +58,7 @@ English summary: unofficial Home Assistant integration for Zhongguang/Outes air-
 
 ## 使用说明与限制
 
-- 目标温度是**外机的目标出水温度**，不是室温。
+- 目标温度是**外机的目标水温**，不是室温。按**出水**还是**回水**控制，取决于线控器里的「控制方式」参数（只能在线控器上改，App 改不了；作者的机器是回水控制）。HA 里目前读不出这个参数。
 - 外机大约每 3 分钟才上传一次模拟量，所以温度、频率会有延迟；状态位变化即报。集成每 10 秒轮询一次。
 - 云端没有电流数据（线控器上的压机相电流、AC 输入电流都没有上传），所以算不了耗电和 COP。
 - 制冷设定值的位置（`Ctrl_Set` 字节 4–5）是推断的，还没在制冷季实写验证。

@@ -23,7 +23,7 @@ PLATFORMS = [
 
 
 def _remove_legacy_climate(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """v0.5.0 起不再提供 climate（空调式温控盘不适合设定出水温度），清掉旧注册项。"""
+    """v0.5.0 起不再提供 climate（空调式温控盘不适合设定水温），清掉旧注册项。"""
     reg = er.async_get(hass)
     entity_id = reg.async_get_entity_id("climate", DOMAIN, f"{entry.entry_id}_climate")
     if entity_id:
